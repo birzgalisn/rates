@@ -35,9 +35,6 @@ importers:
       '@repo/api':
         specifier: workspace:*
         version: link:../../packages/api
-      '@repo/database':
-        specifier: workspace:*
-        version: link:../../packages/database
       reflect-metadata:
         specifier: ^0.2.0
         version: 0.2.2

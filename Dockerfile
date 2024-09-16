@@ -17,4 +17,4 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 # ARG TURBO_TEAM
 # ENV TURBO_TEAM=$TURBO_TEAM
 
-CMD [ "pnpm", "dev" ]
+CMD [ "pnpm", "dev:docker" ]

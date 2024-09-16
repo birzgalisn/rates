@@ -7,11 +7,14 @@
   "license": "UNLICENSED",
   "scripts": {
     "dev": "turbo dev",
+    "predev:docker": "pnpm db:init",
+    "dev:docker": "pnpm dev",
     "build": "turbo build",
     "test": "turbo test",
     "test:e2e": "turbo test:e2e",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "db:init": "pnpm db:check && pnpm db:generate && pnpm db:migrate",
     "db:check": "turbo run db:check",
     "db:generate": "turbo run db:generate",
     "db:migrate": "turbo run db:migrate"
