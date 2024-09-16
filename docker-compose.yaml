@@ -1,5 +1,8 @@
+name: rates
+
 volumes:
-  db_data:
+  db:
+  pgadmin:
 
 networks:
   proxy:
@@ -11,10 +14,29 @@ services:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - POSTGRES_DB=$POSTGRES_DB
+      - PGDATA=/var/lib/postgresql/data
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
     networks:
       - proxy
+
+  pgadmin:
+    image: dpage/pgadmin4:8.11
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=$PGADMIN_DEFAULT_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_DEFAULT_PASSWORD
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pgadmin.rule=Host(`pgadmin.$CNAME`)
+      - traefik.http.routers.pgadmin.entrypoints=web
+      - traefik.http.routers.pgadmin.service=pgadmin
+      - traefik.http.services.pgadmin.loadbalancer.server.port=80
+    networks:
+      - proxy
+    depends_on:
+      - db
 
   turbo:
     image: rates:turbo
@@ -36,6 +58,8 @@ services:
       - traefik.http.services.api.loadbalancer.server.port=4000
     networks:
       - proxy
+    depends_on:
+      - db
 
   traefik:
     image: traefik:v3.1.2
@@ -59,3 +83,4 @@ services:
         aliases:
           - $CNAME
           - api.$CNAME
+          - pgadmin.$CNAME

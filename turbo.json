@@ -1,7 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env"],
-  "globalEnv": ["NODE_ENV", "NEXT_PUBLIC_BASE_URL", "NEXT_PUBLIC_API_HOST"],
+  "globalEnv": [
+    "NODE_ENV",
+    "DATABASE_URL",
+    "NEXT_PUBLIC_BASE_URL",
+    "NEXT_PUBLIC_API_HOST"
+  ],
   "tasks": {
     "dev": {
       "cache": false,
@@ -14,6 +19,18 @@
     },
     "lint": {},
     "test": {},
-    "test:e2e": {}
+    "test:e2e": {},
+    "db:check": {
+      "cache": false
+    },
+    "db:generate": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false
+    },
+    "db:push": {
+      "cache": false
+    }
   }
 }
