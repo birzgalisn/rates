@@ -9,11 +9,13 @@
     "db:check": "drizzle-kit check --config=src/config.ts",
     "db:migrate": "drizzle-kit migrate --config=src/config.ts",
     "db:generate": "drizzle-kit generate --config=src/config.ts",
-    "db:push": "drizzle-kit push --config=src/config.ts"
+    "db:push": "drizzle-kit push --config=src/config.ts",
+    "db:seed": "pnpm dlx ts-node src/seed.ts"
   },
   "publishConfig": {
     "access": "public"
   },
+  "types": "dist/types.d.ts",
   "typesVersions": {
     "*": {
       "*": [

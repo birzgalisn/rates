@@ -14,10 +14,11 @@
     "test:e2e": "turbo test:e2e",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "db:init": "pnpm db:check && pnpm db:generate && pnpm db:migrate",
+    "db:init": "pnpm db:check && pnpm db:generate && pnpm db:migrate && pnpm db:seed",
     "db:check": "turbo run db:check",
     "db:generate": "turbo run db:generate",
-    "db:migrate": "turbo run db:migrate"
+    "db:migrate": "turbo run db:migrate",
+    "db:seed": "turbo run db:seed"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

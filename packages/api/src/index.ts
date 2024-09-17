@@ -1,14 +1,12 @@
-import { Link } from 'links/entities/link.entity';
+import { Rate } from 'rates/entities/rate.entity';
 
-import { CreateLinkDto } from 'links/dto/create-link.dto';
-import { UpdateLinkDto } from 'links/dto/update-link.dto';
+import { GetRateDto } from 'rates/dto/get-rate.dto';
 
-export const links = {
+export const rates = {
   dto: {
-    CreateLinkDto,
-    UpdateLinkDto,
+    GetRateDto,
   },
   entities: {
-    Link,
+    Rate,
   },
 };

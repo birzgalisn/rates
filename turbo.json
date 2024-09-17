@@ -9,7 +9,6 @@
   ],
   "tasks": {
     "dev": {
-      "cache": false,
       "persistent": true
     },
     "build": {
@@ -20,17 +19,10 @@
     "lint": {},
     "test": {},
     "test:e2e": {},
-    "db:check": {
-      "cache": false
-    },
-    "db:generate": {
-      "cache": false
-    },
-    "db:migrate": {
-      "cache": false
-    },
-    "db:push": {
-      "cache": false
-    }
+    "db:check": {},
+    "db:generate": {},
+    "db:migrate": {},
+    "db:push": {},
+    "db:seed": {}
   }
 }

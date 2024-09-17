@@ -2,6 +2,7 @@
 
 # Dependencies
 node_modules
+.pnpm-store
 .pnp
 .pnp.js
 
@@ -19,7 +20,6 @@ coverage
 test-results/
 playwright/.cache/
 playwright-report/
-
 
 # Turbo
 .turbo
