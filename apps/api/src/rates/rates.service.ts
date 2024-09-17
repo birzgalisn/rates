@@ -18,10 +18,13 @@ export class RatesService {
     const offset = (page - 1) * perPage;
 
     const rateColumn =
-      { aud: exchangeRates.audRate, gbp: exchangeRates.gbpRate }[rate] ??
-      exchangeRates.usdRate;
+      {
+        usd: exchangeRates.usdRate,
+        aud: exchangeRates.audRate,
+        gbp: exchangeRates.gbpRate,
+      }[rate] ?? exchangeRates.usdRate;
 
-    const sortOrder = { desc }[order] ?? asc;
+    const sortOrder = { desc, asc }[order] ?? desc;
 
     return this.conn.transaction(async (tx) => {
       const [data, [metadata], totalCount] = await Promise.all([
