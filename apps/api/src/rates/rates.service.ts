@@ -13,7 +13,7 @@ export class RatesService {
   constructor(@Inject(DRIZZLE) private conn: Db) {}
 
   public async findAll(query: RateDto): Promise<Rate> {
-    const { rate = 'usd', order = 'desc', page = 1, perPage = 10 } = query;
+    const { rate, order, page, perPage } = RatesService.parseQuery(query);
 
     const offset = RatesService.getOffset(page, perPage);
     const rateColumn = RatesService.getColumn(rate);
@@ -32,6 +32,15 @@ export class RatesService {
         pagination: RatesService.calculatePagination(page, perPage, totalCount),
       };
     });
+  }
+
+  private static parseQuery({
+    page = 1,
+    perPage = 10,
+    rate = 'usd',
+    order = 'desc',
+  }: RateDto) {
+    return { page: +page, perPage: +perPage, rate, order };
   }
 
   private static getOffset(page: number, perPage: number) {
