@@ -8,9 +8,7 @@
     "NEXT_PUBLIC_API_HOST"
   ],
   "tasks": {
-    "dev": {
-      "persistent": true
-    },
+    "dev": { "persistent": true },
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT", ".env*"],
