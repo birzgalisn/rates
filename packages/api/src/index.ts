@@ -1,6 +1,7 @@
 import { Rate } from 'rates/entities/rate.entity';
 
-import { GetRateDto } from 'rates/dto/get-rate.dto';
+import { CsvDto } from 'csv/dto/csv.dto';
+import { Csv } from 'csv/entities/csv.entity';
 
 export const rates = {
   dto: {
@@ -10,3 +11,5 @@ export const rates = {
     Rate,
   },
 };
+
+export const csv = { dto: { CsvDto }, entities: { Csv } };

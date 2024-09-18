@@ -1,0 +1,32 @@
+export class Csv {
+  AUD: string;
+  BGN: string;
+  BRL: string;
+  CAD: string;
+  CHF: string;
+  CNY: string;
+  CZK: string;
+  DKK: string;
+  GBP: string;
+  HKD: string;
+  HUF: string;
+  IDR: string;
+  ILS: string;
+  INR: string;
+  ISK: string;
+  JPY: string;
+  KRW: string;
+  MXN: string;
+  MYR: string;
+  NOK: string;
+  NZD: string;
+  PHP: string;
+  PLN: string;
+  RON: string;
+  SEK: string;
+  SGD: string;
+  THB: string;
+  TRY: string;
+  USD: string;
+  ZAR: string;
+}
