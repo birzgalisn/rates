@@ -13,6 +13,8 @@
     "test": "turbo test",
     "test:e2e": "turbo test:e2e",
     "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "clean": "turbo clean",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:init": "pnpm db:check && pnpm db:generate && pnpm db:migrate && pnpm db:seed",
     "db:check": "turbo run db:check",
@@ -24,6 +26,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.6",
     "turbo": "^2.1.2"
   },
   "packageManager": "pnpm@8.15.5",

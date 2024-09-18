@@ -11,8 +11,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   ignorePatterns: [
     '.*.js',
-    '*.setup.js',
-    '*.config.js',
+    '*.setup.[jt]s',
+    '*.config.[jt]s',
     '.turbo/',
     'dist/',
     'coverage/',
