@@ -3,9 +3,9 @@ import Image from 'next/image';
 
 import { Rate } from '@repo/api/rates/entities/rate.entity';
 
-import { Card } from '@repo/ui/card';
-import { Code } from '@repo/ui/code';
-import { Button } from '@repo/ui/button';
+import { Card } from '@repo/ui/components/card';
+import { Code } from '@repo/ui/components/code';
+import { Button } from '@repo/ui/components/ui/button';
 
 import styles from './page.module.css';
 
@@ -87,9 +87,7 @@ const RootPage = ({ params }: { params: { forTest?: boolean } }) => {
         </div>
       </div>
 
-      <Button appName="web (with-nestjs)" className={styles.button}>
-        Click me!
-      </Button>
+      <Button variant="destructive">Click me!</Button>
 
       <div className={styles.hero}>
         <div className={styles.heroContent}>

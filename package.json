@@ -20,7 +20,8 @@
     "db:check": "turbo run db:check",
     "db:generate": "turbo run db:generate",
     "db:migrate": "turbo run db:migrate",
-    "db:seed": "turbo run db:seed"
+    "db:seed": "turbo run db:seed",
+    "ui": "pnpm --filter @repo/ui ui"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
