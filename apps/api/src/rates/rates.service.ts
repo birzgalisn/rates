@@ -5,14 +5,14 @@ import { asc, desc, sql } from '@repo/database/db';
 
 import { DRIZZLE } from 'src/constants/db.constants';
 
+import { RateDto } from '@repo/api/rates/dto/rate.dto';
 import { Rate } from '@repo/api/rates/entities/rate.entity';
-import { GetRateDto } from '@repo/api/rates/dto/get-rate.dto';
 
 @Injectable()
 export class RatesService {
   constructor(@Inject(DRIZZLE) private conn: Db) {}
 
-  async findAll(query: GetRateDto): Promise<Rate> {
+  public async findAll(query: RateDto): Promise<Rate> {
     const { rate = 'usd', order = 'desc', page = 1, perPage = 10 } = query;
 
     const offset = (page - 1) * perPage;

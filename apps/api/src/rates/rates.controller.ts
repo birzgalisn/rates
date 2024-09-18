@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 
-import { GetRateDto } from '@repo/api/rates/dto/get-rate.dto';
+import { RateDto } from '@repo/api/rates/dto/rate.dto';
 import { RatesService } from './rates.service';
 
 @Controller('rates')
@@ -8,7 +8,7 @@ export class RatesController {
   constructor(private readonly ratesService: RatesService) {}
 
   @Get()
-  findAll(@Query() query: GetRateDto) {
+  public findAll(@Query() query: RateDto) {
     return this.ratesService.findAll(query);
   }
 }
