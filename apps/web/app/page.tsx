@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import Image from 'next/image';
 
-import { Link } from '@repo/api/links/entities/link.entity';
+import { Rate } from '@repo/api/rates/entities/rate.entity';
 
 import { Card } from '@repo/ui/card';
 import { Code } from '@repo/ui/code';
@@ -32,34 +32,29 @@ const Gradient = ({
   );
 };
 
-const LinksSection = async () => {
-  const fetchLinks = async (): Promise<Link[]> => {
-    try {
-      return await (
-        await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/links`)
-      ).json();
-    } catch (_) {
-      return [];
-    }
+const RatesSection = async () => {
+  const fetchRates = async (): Promise<Rate> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_HOST}/rates`);
+    return await res.json();
   };
 
-  const links = await fetchLinks();
+  const rates = await fetchRates();
 
   return (
     <div className={styles.grid}>
-      {links.map(({ title, url, description }) => (
-        <Card className={styles.card} href={url} key={title} title={title}>
-          {description}
+      {rates.data.map((rate) => (
+        <Card className={styles.card} href="" key={rate.id} title="EUR">
+          ${rate.rate}
         </Card>
       ))}
     </div>
   );
 };
 
-const LinksSectionForTest = () => {
+const RatesSectionForTest = () => {
   return (
     <div className={styles.grid}>
-      <Card className={styles.card} href={'url'} title={'title'}>
+      <Card className={styles.card} href="url" title="title">
         description
       </Card>
     </div>
@@ -155,9 +150,9 @@ const RootPage = ({ params }: { params: { forTest?: boolean } }) => {
        * @see https://nextjs.org/docs/app/building-your-application/testing/jest
        */}
       {params.forTest ? (
-        <LinksSectionForTest />
+        <RatesSectionForTest />
       ) : (
-        <Suspense fallback={'Loading links...'}>{<LinksSection />}</Suspense>
+        <Suspense fallback={'Loading links...'}>{<RatesSection />}</Suspense>
       )}
     </main>
   );
