@@ -15,62 +15,108 @@ export class RatesService {
   public async findAll(query: RateDto): Promise<Rate> {
     const { rate = 'usd', order = 'desc', page = 1, perPage = 10 } = query;
 
-    const offset = (page - 1) * perPage;
-
-    const rateColumn =
-      {
-        usd: exchangeRates.usdRate,
-        aud: exchangeRates.audRate,
-        gbp: exchangeRates.gbpRate,
-      }[rate] ?? exchangeRates.usdRate;
-
-    const sortOrder = { desc, asc }[order] ?? desc;
+    const offset = RatesService.getOffset(page, perPage);
+    const rateColumn = RatesService.getColumn(rate);
+    const sortOrder = RatesService.getSortOrder(order);
 
     return this.conn.transaction(async (tx) => {
-      const [data, [metadata], totalCount] = await Promise.all([
-        tx
-          .select({
-            id: exchangeRates.id,
-            rate: rateColumn,
-            createdAt: exchangeRates.createdAt,
-          })
-          .from(exchangeRates)
-          .orderBy(sortOrder(rateColumn))
-          .limit(perPage)
-          .offset(offset),
-
-        tx
-          .select({
-            minimum: sql<number>`min(${rateColumn})`,
-            maximum: sql<number>`max(${rateColumn})`,
-            average: sql<number>`avg(${rateColumn})`,
-            updatedAt: sql<string>`max(${exchangeRates.createdAt})`,
-          })
-          .from(exchangeRates),
-
-        tx
-          .select({ count: sql<number>`count(*)` })
-          .from(exchangeRates)
-          .then(([result]) => result.count),
+      const [data, metadata, totalCount] = await Promise.all([
+        RatesService.fetchData(tx, rateColumn, sortOrder, perPage, offset),
+        RatesService.fetchMetadata(tx, rateColumn),
+        RatesService.fetchTotalCount(tx),
       ]);
 
       return {
         data,
-        metadata: {
-          minimum: +metadata.minimum,
-          maximum: +metadata.maximum,
-          average: +metadata.average,
-          updatedAt: {
-            gmt: metadata.updatedAt,
-          },
-        },
-        pagination: {
-          previous: +page > 1 ? +page - 1 : undefined,
-          next: +page * +perPage < +totalCount ? +page + 1 : undefined,
-          current: +page,
-          total: Math.ceil(+totalCount / +perPage),
-        },
+        metadata: RatesService.formatMetadata(metadata),
+        pagination: RatesService.calculatePagination(page, perPage, totalCount),
       };
     });
+  }
+
+  private static getOffset(page: number, perPage: number) {
+    return (page - 1) * perPage;
+  }
+
+  private static getColumn(rate: string) {
+    const column =
+      {
+        aud: exchangeRates.audRate,
+        gbp: exchangeRates.gbpRate,
+        usd: exchangeRates.usdRate,
+      }[rate] ?? exchangeRates.usdRate;
+    return column;
+  }
+
+  private static getSortOrder(order: string) {
+    const sort = { desc, asc }[order] ?? desc;
+    return sort;
+  }
+
+  private static fetchData(
+    tx: Db,
+    rateColumn: ReturnType<typeof RatesService.getColumn>,
+    sortOrder: ReturnType<typeof RatesService.getSortOrder>,
+    perPage: number,
+    offset: number,
+  ) {
+    return tx
+      .select({
+        id: exchangeRates.id,
+        rate: rateColumn,
+        createdAt: exchangeRates.createdAt,
+      })
+      .from(exchangeRates)
+      .orderBy(sortOrder(rateColumn))
+      .limit(perPage)
+      .offset(offset);
+  }
+
+  private static fetchMetadata(
+    tx: Db,
+    column: ReturnType<typeof RatesService.getColumn>,
+  ) {
+    return tx
+      .select({
+        minimum: sql<number>`min(${column})`,
+        maximum: sql<number>`max(${column})`,
+        average: sql<number>`avg(${column})`,
+        updatedAt: sql<string>`max(${exchangeRates.createdAt})`,
+      })
+      .from(exchangeRates);
+  }
+
+  private static fetchTotalCount(tx: Db) {
+    return tx
+      .select({ count: sql<number>`count(*)` })
+      .from(exchangeRates)
+      .then(([result]) => result.count);
+  }
+
+  private static formatMetadata([meta]: Awaited<
+    ReturnType<typeof RatesService.fetchMetadata>
+  >) {
+    return {
+      minimum: +meta.minimum,
+      maximum: +meta.maximum,
+      average: +meta.average,
+      updatedAt: { gmt: meta.updatedAt },
+    };
+  }
+
+  private static calculatePagination(
+    ...pagination: [
+      page: number,
+      perPage: number,
+      totalCount: Awaited<ReturnType<typeof RatesService.fetchTotalCount>>,
+    ]
+  ) {
+    const [page, perPage, totalCount] = pagination.map(Number);
+    return {
+      previous: page > 1 ? page - 1 : undefined,
+      next: page * perPage < totalCount ? page + 1 : undefined,
+      current: page,
+      total: Math.ceil(totalCount / perPage),
+    };
   }
 }
