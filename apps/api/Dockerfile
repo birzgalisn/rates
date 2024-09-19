@@ -47,6 +47,9 @@ COPY --from=installer --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --from=installer --chown=nestjs:nodejs /app/packages/api/node_modules ./packages/api/node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/packages/api/dist/ ./packages/api
 
+COPY --from=installer --chown=nestjs:nodejs /app/packages/database/node_modules ./packages/database/node_modules
+COPY --from=builder --chown=nestjs:nodejs /app/packages/database/dist/ ./packages/database
+
 COPY --from=installer --chown=nestjs:nodejs /app/apps/api/node_modules ./apps/api/node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/apps/api/dist/ ./apps/api
 
