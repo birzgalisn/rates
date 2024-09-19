@@ -13,11 +13,11 @@ export class RatesService {
   constructor(@Inject(DRIZZLE) private conn: Db) {}
 
   public async findAll(query: RateDto): Promise<Rate> {
-    const { rate, order, page, perPage } = RatesService.parseQuery(query);
+    const { rate, sort, page, perPage } = RatesService.parseQuery(query);
 
     const offset = RatesService.getOffset(page, perPage);
     const rateColumn = RatesService.getColumn(rate);
-    const sortOrder = RatesService.getSortOrder(order);
+    const sortOrder = RatesService.getSort(sort);
 
     return this.conn.transaction(async (tx) => {
       const [data, metadata, totalCount] = await Promise.all([
@@ -27,8 +27,8 @@ export class RatesService {
       ]);
 
       return {
-        data,
-        metadata: RatesService.formatMetadata(metadata),
+        data: RatesService.formatData(data, rate),
+        metadata: RatesService.formatMetadata(metadata, rate),
         pagination: RatesService.calculatePagination(page, perPage, totalCount),
       };
     });
@@ -38,9 +38,9 @@ export class RatesService {
     page = 1,
     perPage = 10,
     rate = 'usd',
-    order = 'desc',
+    sort = 'desc',
   }: RateDto) {
-    return { page: +page, perPage: +perPage, rate, order };
+    return { page: +page, perPage: +perPage, rate, sort };
   }
 
   private static getOffset(page: number, perPage: number) {
@@ -57,15 +57,15 @@ export class RatesService {
     return column;
   }
 
-  private static getSortOrder(order: string) {
-    const sort = { desc, asc }[order] ?? desc;
-    return sort;
+  private static getSort(sort: string) {
+    const direction = { desc, asc }[sort] ?? desc;
+    return direction;
   }
 
   private static fetchData(
     tx: Db,
     rateColumn: ReturnType<typeof RatesService.getColumn>,
-    sortOrder: ReturnType<typeof RatesService.getSortOrder>,
+    sortOrder: ReturnType<typeof RatesService.getSort>,
     perPage: number,
     offset: number,
   ) {
@@ -76,7 +76,7 @@ export class RatesService {
         createdAt: exchangeRates.createdAt,
       })
       .from(exchangeRates)
-      .orderBy(sortOrder(rateColumn))
+      .orderBy(sortOrder(exchangeRates.createdAt))
       .limit(perPage)
       .offset(offset);
   }
@@ -102,15 +102,31 @@ export class RatesService {
       .then(([result]) => result.count);
   }
 
-  private static formatMetadata([meta]: Awaited<
-    ReturnType<typeof RatesService.fetchMetadata>
-  >) {
+  private static formatData(
+    data: Awaited<ReturnType<typeof RatesService.fetchData>>,
+    rate: ReturnType<typeof RatesService.parseQuery>['rate'],
+  ) {
+    return data.map((row) => ({ ...row, sign: RatesService.getSign(rate) }));
+  }
+
+  private static formatMetadata(
+    [meta]: Awaited<ReturnType<typeof RatesService.fetchMetadata>>,
+    rate: ReturnType<typeof RatesService.parseQuery>['rate'],
+  ) {
     return {
       minimum: +meta.minimum,
       maximum: +meta.maximum,
       average: +meta.average,
+      sign: RatesService.getSign(rate),
       updatedAt: { gmt: meta.updatedAt },
     };
+  }
+
+  private static getSign(
+    rate: ReturnType<typeof RatesService.parseQuery>['rate'],
+  ) {
+    const sign = { aud: 'A$', gbp: '£', usd: '$' }[rate] ?? '$';
+    return sign;
   }
 
   private static calculatePagination(
