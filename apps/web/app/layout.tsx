@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata = {
   title: 'Exchange rates',
   description:
-    'Browse various EUR historic exchange rates to other currencies like AUD, GBP and USD',
+    'Browse various historical EUR exchange rates for currencies such as AUD, GBP, and USD.',
 } satisfies Metadata;
 
 export default function RootLayout({ children }: Readonly<PropsWithChildren>) {

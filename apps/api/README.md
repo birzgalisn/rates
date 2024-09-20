@@ -8,7 +8,7 @@ First, run the development server:
 pnpm run dev
 ```
 
-By default, your server will run at [http://localhost:3000](http://localhost:3000). You can use your favorite API platform like [Insomnia](https://insomnia.rest/) or [Postman](https://www.postman.com/) to test your APIs
+By default, your server will run at [http://localhost:4000](http://localhost:4000). You can use your favorite API platform like [Insomnia](https://insomnia.rest/) or [Postman](https://www.postman.com/) to test your APIs
 
 You can start editing the demo **APIs** by modifying [linksService](./src/links/links.service.ts) provider.
 
