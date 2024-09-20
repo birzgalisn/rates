@@ -15,12 +15,15 @@ import { useRatesPagination } from '~/app/hooks/use-rates-pagination';
 export function RatesPagination() {
   const { paginator, handlePageChange } = useRatesPagination();
 
+  const getPaginationClassName = (page?: number) =>
+    PAGINATION_STYLES_MAP[`${!!page}`];
+
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            className="hover:cursor-pointer"
+            className={getPaginationClassName(paginator.previous)}
             onClick={() =>
               paginator.previous && handlePageChange(paginator.previous)
             }
@@ -29,7 +32,7 @@ export function RatesPagination() {
 
         <PaginationItem>
           <PaginationEllipsis
-            className="hover:cursor-pointer"
+            className={getPaginationClassName(paginator.burstPrevious)}
             onClick={() =>
               paginator.burstPrevious &&
               handlePageChange(paginator.current - paginator.burstPrevious)
@@ -41,7 +44,7 @@ export function RatesPagination() {
           <PaginationItem key={page}>
             <PaginationLink
               isActive={page === paginator.current}
-              className="hover:cursor-pointer"
+              className="select-none hover:cursor-pointer"
               onClick={() => handlePageChange(page)}
             >
               {page}
@@ -51,7 +54,7 @@ export function RatesPagination() {
 
         <PaginationItem>
           <PaginationEllipsis
-            className="hover:cursor-pointer"
+            className={getPaginationClassName(paginator.burstNext)}
             onClick={() =>
               !!paginator.burstNext &&
               handlePageChange(paginator.current + paginator.burstNext)
@@ -61,7 +64,7 @@ export function RatesPagination() {
 
         <PaginationItem>
           <PaginationNext
-            className="hover:cursor-pointer"
+            className={getPaginationClassName(paginator.next)}
             onClick={() => paginator.next && handlePageChange(paginator.next)}
           />
         </PaginationItem>
@@ -69,3 +72,8 @@ export function RatesPagination() {
     </Pagination>
   );
 }
+
+const PAGINATION_STYLES_MAP = Object.freeze({
+  true: 'select-none hover:cursor-pointer',
+  false: 'select-none hover:cursor-not-allowed',
+});
