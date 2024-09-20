@@ -24,8 +24,18 @@ export class CsvService {
       .values({ audRate: rates.AUD, gbpRate: rates.GBP, usdRate: rates.USD });
   }
 
+  private static getExchangeRatesUrl(
+    baseUrl = 'https://www.bank.lv/vk/ecb.csv',
+  ) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = `${now.getMonth()}`.padStart(2, '0');
+    const date = `${now.getDate()}`.padStart(2, '0');
+    return `${baseUrl}?date=${year}${month}${date}`;
+  }
+
   private static fetchExchangeRates(
-    url = 'https://www.bank.lv/vk/ecb.csv',
+    url = CsvService.getExchangeRatesUrl(),
   ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       https
