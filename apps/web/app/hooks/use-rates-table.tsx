@@ -16,6 +16,8 @@ import { Button } from '@repo/ui/components/ui/button';
 
 import { makeClientRatesOptions } from '~/app/query-options/rates/client';
 import { RatesSelect } from '~/app/components/rates-select';
+import { formatDateTime } from '~/app/lib/format-date-time';
+import { formatRate } from '~/app/lib/format-rate';
 
 export function useRatesTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -46,13 +48,7 @@ const columns: ColumnDef<Rate['data'][number]>[] = [
         <CaretSortIcon className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => (
-      <Text suppressHydrationWarning>
-        {new Date(
-          row.original.createdAt.replace(' ', 'T') + 'Z',
-        ).toLocaleString()}
-      </Text>
-    ),
+    cell: ({ row }) => <Text>{formatDateTime(row.original.createdAt)}</Text>,
   },
   {
     accessorKey: 'rate',
@@ -64,8 +60,7 @@ const columns: ColumnDef<Rate['data'][number]>[] = [
     ),
     cell: ({ row }) => (
       <Text className="text-right">
-        {row.original.sign}
-        {Number(row.original.rate).toFixed(4)}
+        {formatRate(row.original.rate, row.original.sign)}
       </Text>
     ),
   },

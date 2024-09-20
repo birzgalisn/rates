@@ -5,7 +5,7 @@ import { Text } from '@repo/ui/components/text';
 import { useRatesStatistics } from '~/app/hooks/use-rates-statistics';
 
 export function RatesStatistics() {
-  const { minimum, maximum, average, createdAt } = useRatesStatistics();
+  const { minimum, maximum, average, updatedAt } = useRatesStatistics();
 
   return (
     <div className="flex flex-col gap-2">
@@ -15,7 +15,7 @@ export function RatesStatistics() {
         <Text>Average: {average}</Text>
       </div>
       <div>
-        <Text suppressHydrationWarning>Last updated at: {createdAt}</Text>
+        <Text>Last updated at: {updatedAt}</Text>
       </div>
     </div>
   );
