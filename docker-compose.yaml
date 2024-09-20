@@ -84,3 +84,5 @@ services:
           - $CNAME
           - api.$CNAME
           - pgadmin.$CNAME
+    depends_on:
+      - turbo
