@@ -1,17 +1,11 @@
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useUpdateSearchParams } from './use-update-search-params';
 
 export function useRatesSelect() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const { searchParams, updateSearchParam } = useUpdateSearchParams();
 
-  const rate = (searchParams.get('rate') ?? 'USD').toUpperCase();
+  const handleRateChange = (rate: string) => updateSearchParam('rate', rate);
 
-  const handleRateChange = (rate: string) => {
-    const urlParams = new URLSearchParams(searchParams);
-    urlParams.set('rate', rate);
-    router.push(`${pathname}?${urlParams}`);
-  };
+  const rate = (searchParams.get('rate') ?? 'usd').toUpperCase();
 
   return { rate, handleRateChange } as const;
 }
