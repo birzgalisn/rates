@@ -15,7 +15,7 @@ export function RatesSelect() {
 
   return (
     <Select onValueChange={handleRateChange}>
-      <SelectTrigger className="w-28 mx-2">
+      <SelectTrigger className="w-32 ml-1">
         <SelectValue placeholder={rate} />
       </SelectTrigger>
       <SelectContent>
