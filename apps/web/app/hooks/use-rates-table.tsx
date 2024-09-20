@@ -65,7 +65,7 @@ const columns: ColumnDef<Rate['data'][number]>[] = [
     cell: ({ row }) => (
       <Text className="text-right">
         {row.original.sign}
-        {row.original.rate}
+        {Number(row.original.rate).toFixed(4)}
       </Text>
     ),
   },
