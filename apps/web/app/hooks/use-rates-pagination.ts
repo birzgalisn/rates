@@ -34,12 +34,10 @@ function constructPaginator(
   const visibleStart = Math.max(1, current - visibleRange);
   const visibleEnd = Math.min(total, current + visibleRange);
 
-  const visible: number[] = [];
-  for (let i = visibleStart; i <= visibleEnd; i++) {
-    if (!visible.includes(i)) {
-      visible.push(i);
-    }
-  }
+  const visible = Array.from(
+    { length: visibleEnd - visibleStart + 1 },
+    (_, i) => i + visibleStart,
+  );
 
   return {
     previous,
