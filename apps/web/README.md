@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-> 🏁 This app depends on the [apps/api](../api/README.md) server. make sure your server is running at the port `3000`
+> 🏁 This app depends on the [apps/api](../api/README.md) server. Make sure your server is running at the port `4000`
 
 Run the development server:
 
