@@ -35,7 +35,7 @@ export function RatesPagination() {
             className={getPaginationClassName(paginator.burstPrevious)}
             onClick={() =>
               paginator.burstPrevious &&
-              handlePageChange(paginator.current - paginator.burstPrevious)
+              handlePageChange(paginator.burstPrevious)
             }
           />
         </PaginationItem>
@@ -56,8 +56,7 @@ export function RatesPagination() {
           <PaginationEllipsis
             className={getPaginationClassName(paginator.burstNext)}
             onClick={() =>
-              !!paginator.burstNext &&
-              handlePageChange(paginator.current + paginator.burstNext)
+              !!paginator.burstNext && handlePageChange(paginator.burstNext)
             }
           />
         </PaginationItem>

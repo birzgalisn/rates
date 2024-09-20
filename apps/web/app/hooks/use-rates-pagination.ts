@@ -21,10 +21,12 @@ export function useRatesPagination() {
   return { paginator, handlePageChange } as const;
 }
 
-function constructPaginator(pagination: Rate['pagination']) {
+function constructPaginator(
+  pagination: Rate['pagination'],
+  burstSize = 5,
+  visibleRange = 2,
+) {
   const { previous, next, current, total } = pagination;
-  const burstSize = 5;
-  const visibleRange = 2;
 
   const burstNext = Math.min(burstSize, total - current);
   const burstPrevious = Math.min(burstSize, current - 1);
@@ -39,5 +41,12 @@ function constructPaginator(pagination: Rate['pagination']) {
     }
   }
 
-  return { previous, next, current, burstNext, burstPrevious, visible };
+  return {
+    previous,
+    next,
+    current,
+    visible,
+    burstNext: burstNext ? current + burstNext : undefined,
+    burstPrevious: burstPrevious ? current - burstPrevious : undefined,
+  } as const;
 }
