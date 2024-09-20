@@ -1,23 +1,17 @@
 import { useMemo } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { makeClientRatesOptions } from '~/app/query-options/rates/client';
+import { useUpdateSearchParams } from '~/app/hooks/use-update-search-params';
 
 import { Rate } from '@repo/api/rates/entities/rate.entity';
 
 export function useRatesPagination() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const { updateSearchParam } = useUpdateSearchParams();
 
   const { data: rates } = useSuspenseQuery(makeClientRatesOptions());
 
-  const handlePageChange = (page: number) => {
-    const urlParams = new URLSearchParams(searchParams);
-    urlParams.set('page', `${page}`);
-    router.push(`${pathname}?${urlParams}`);
-  };
+  const handlePageChange = (page: number) => updateSearchParam('page', page);
 
   const paginator = useMemo(
     () => constructPaginator(rates.pagination),
