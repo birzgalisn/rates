@@ -53,7 +53,7 @@ This repository includes the following packages/apps:
     └── packages
         ├── @repo/api                 # Shared `NestJS` resources.
         ├── @repo/database            # `drizzle` database.
-        ├── @repo/eslint-config       # `eslint` configurations (includes `prettier`)
+        ├── @repo/eslint-config       # `eslint` configurations
         ├── @repo/jest-config         # `jest` configurations
         ├── @repo/typescript-config   # `tsconfig.json`s used throughout the monorepo
         └── @repo/ui                  # Shareable stub React component library.
