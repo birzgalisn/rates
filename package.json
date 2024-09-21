@@ -1,10 +1,7 @@
 {
-  "name": "my-turborepo",
+  "name": "rates",
   "version": "0.0.0",
   "private": true,
-  "description": "",
-  "author": "",
-  "license": "UNLICENSED",
   "scripts": {
     "dev": "turbo dev",
     "predev:docker": "pnpm db:init",
