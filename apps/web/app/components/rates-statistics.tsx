@@ -9,7 +9,7 @@ export function RatesStatistics() {
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-row gap-4 w-full">
+      <div className="flex w-full flex-row gap-4">
         <Text>Minimum: {minimum}</Text>
         <Text>Maximum: {maximum}</Text>
         <Text>Average: {average}</Text>

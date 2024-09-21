@@ -18,8 +18,8 @@ export default function RootPage({
   void queryClient.prefetchQuery(makeServerRatesOptions(searchParams));
 
   return (
-    <main className="h-screen max-w-screen-sm m-auto p-4">
-      <div className="flex flex-col gap-4 border rounded-md p-4">
+    <main className="m-auto h-screen max-w-screen-sm p-4">
+      <div className="flex flex-col gap-4 rounded-md border p-4">
         <Title>Exchange rates</Title>
         <HydrationBoundary state={dehydrate(queryClient)}>
           <RatesPagination />

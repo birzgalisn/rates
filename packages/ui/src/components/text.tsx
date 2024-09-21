@@ -5,7 +5,7 @@ interface Text extends PropsWithChildren, HTMLProps<HTMLParagraphElement> {}
 
 export function Text({ className, children, ...props }: Text) {
   return (
-    <p className={cn('text-sm text-muted-foreground', className)} {...props}>
+    <p className={cn('text-muted-foreground text-sm', className)} {...props}>
       {children}
     </p>
   );

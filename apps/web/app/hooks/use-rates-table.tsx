@@ -53,7 +53,7 @@ const columns: ColumnDef<Rate['data'][number]>[] = [
   {
     accessorKey: 'rate',
     header: () => (
-      <Text className="flex justify-end items-center">
+      <Text className="flex items-center justify-end">
         EUR to
         <RatesSelect />
       </Text>
