@@ -17,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }: Readonly<PropsWithChildren>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-muted`}>
         <Providers>{children}</Providers>
       </body>
     </html>
