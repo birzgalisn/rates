@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from '@repo/ui/components/ui/select';
 
-import { useRatesSelect } from '~/app/hooks/use-rates-select';
+import { useRatesSelect } from '~/hooks/use-rates-select';
 
 export function RatesSelect() {
   const { rate, handleRateChange } = useRatesSelect();

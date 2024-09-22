@@ -14,10 +14,10 @@ import { Text } from '@repo/ui/components/text';
 import { Rate } from '@repo/api/rates/entities/rate.entity';
 import { Button } from '@repo/ui/components/ui/button';
 
-import { makeClientRatesOptions } from '~/app/query-options/rates/client';
-import { RatesSelect } from '~/app/components/rates-select';
-import { formatDateTime } from '~/app/lib/format-date-time';
-import { formatRate } from '~/app/lib/format-rate';
+import { makeClientRatesOptions } from '~/query-options/rates/client';
+import { RatesSelect } from '~/components/rates-select';
+import { formatDateTime } from '~/lib/format-date-time';
+import { formatRate } from '~/lib/format-rate';
 
 export function useRatesTable() {
   const [sorting, setSorting] = useState<SortingState>([]);

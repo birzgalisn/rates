@@ -1,5 +1,5 @@
-import { createRatesOptions } from '~/app/query-options/rates/create';
-import { serverUrlSearchParamsAdapter } from '~/app/lib/server-url-search-params-adapter';
+import { createRatesOptions } from '~/query-options/rates/create';
+import { serverUrlSearchParamsAdapter } from '~/lib/server-url-search-params-adapter';
 
 export function makeServerRatesOptions(
   searchParams: {

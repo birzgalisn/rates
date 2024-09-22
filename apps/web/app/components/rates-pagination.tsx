@@ -10,7 +10,7 @@ import {
   PaginationPrevious,
 } from '@repo/ui/components/ui/pagination';
 
-import { useRatesPagination } from '~/app/hooks/use-rates-pagination';
+import { useRatesPagination } from '~/hooks/use-rates-pagination';
 
 export function RatesPagination() {
   const { paginator, handlePageChange } = useRatesPagination();

@@ -11,7 +11,7 @@ import {
   TableRow,
 } from '@repo/ui/components/ui/table';
 
-import { useRatesTable } from '~/app/hooks/use-rates-table';
+import { useRatesTable } from '~/hooks/use-rates-table';
 
 export function RatesTable() {
   const { table, columns } = useRatesTable();

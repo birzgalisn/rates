@@ -2,7 +2,7 @@
 
 import { Text } from '@repo/ui/components/text';
 
-import { useRatesStatistics } from '~/app/hooks/use-rates-statistics';
+import { useRatesStatistics } from '~/hooks/use-rates-statistics';
 
 export function RatesStatistics() {
   const { minimum, maximum, average, updatedAt } = useRatesStatistics();

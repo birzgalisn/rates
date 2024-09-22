@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
+
 import { useSuspenseQuery } from '@tanstack/react-query';
 
-import { makeClientRatesOptions } from '~/app/query-options/rates/client';
-import { useUpdateSearchParams } from '~/app/hooks/use-update-search-params';
+import { makeClientRatesOptions } from '~/query-options/rates/client';
+import { useUpdateSearchParams } from '~/hooks/use-update-search-params';
 
 import { Rate } from '@repo/api/rates/entities/rate.entity';
 

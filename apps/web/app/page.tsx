@@ -1,10 +1,10 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
-import { getQueryClient } from '~/app/lib/get-query-client';
-import { makeServerRatesOptions } from '~/app/query-options/rates/server';
-import { RatesStatistics } from '~/app/components/rates-statistics';
-import { RatesTable } from '~/app/components/rates-table';
-import { RatesPagination } from '~/app/components/rates-pagination';
+import { getQueryClient } from '~/lib/get-query-client';
+import { makeServerRatesOptions } from '~/query-options/rates/server';
+import { RatesStatistics } from '~/components/rates-statistics';
+import { RatesTable } from '~/components/rates-table';
+import { RatesPagination } from '~/components/rates-pagination';
 
 import { Title } from '@repo/ui/components/title';
 

@@ -1,4 +1,4 @@
-import { useUpdateSearchParams } from './use-update-search-params';
+import { useUpdateSearchParams } from '~/hooks/use-update-search-params';
 
 export function useRatesSelect() {
   const { searchParams, updateSearchParam } = useUpdateSearchParams();

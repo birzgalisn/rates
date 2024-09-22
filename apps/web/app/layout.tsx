@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { Inter } from 'next/font/google';
 import type { Metadata } from 'next';
 
-import Providers from './lib/providers';
+import Providers from '~/lib/providers';
 
 import '@repo/ui/globals.css';
 
