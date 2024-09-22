@@ -5,12 +5,11 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Inject, Injectable } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
+import { Csv } from '@repo/api/csv/entities/csv.entity';
 import { Db } from '@repo/database/types';
 import { exchangeRates } from '@repo/database/schema';
 
-import { Csv } from '@repo/api/csv/entities/csv.entity';
-
-import { DRIZZLE } from 'src/constants/db.constants';
+import { DRIZZLE } from '~/constants/db.constants';
 
 @Injectable()
 export class CsvService {

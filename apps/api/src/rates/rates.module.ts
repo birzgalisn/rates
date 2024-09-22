@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 
-import { DrizzleModule } from 'src/drizzle/drizzle.module';
+import { DrizzleModule } from '~/drizzle/drizzle.module';
 
-import { RatesService } from './rates.service';
-import { RatesController } from './rates.controller';
+import { RatesService } from '~/rates/rates.service';
+import { RatesController } from '~/rates/rates.controller';
 
 @Module({
   imports: [DrizzleModule],

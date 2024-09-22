@@ -5,11 +5,11 @@ import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CacheModule } from '@nestjs/cache-manager';
 
-import { AppService } from './app.service';
-import { AppController } from './app.controller';
+import { AppService } from '~/app.service';
+import { AppController } from '~/app.controller';
 
-import { RatesModule } from './rates/rates.module';
-import { CsvModule } from './csv/csv.module';
+import { RatesModule } from '~/rates/rates.module';
+import { CsvModule } from '~/csv/csv.module';
 
 @Module({
   imports: [

@@ -7,8 +7,8 @@ import { Db } from '@repo/database/types';
 import { exchangeRates } from '@repo/database/schema';
 import { asc, desc, sql } from '@repo/database/db';
 
-import { RATES_KEY, RATES_TTL } from 'src/constants/cache.constants';
-import { DRIZZLE } from 'src/constants/db.constants';
+import { RATES_KEY, RATES_TTL } from '~/constants/cache.constants';
+import { DRIZZLE } from '~/constants/db.constants';
 
 import { RateDto } from '@repo/api/rates/dto/rate.dto';
 import { Rate } from '@repo/api/rates/entities/rate.entity';

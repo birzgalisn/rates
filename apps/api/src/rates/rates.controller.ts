@@ -1,7 +1,8 @@
 import { Controller, Get, Query } from '@nestjs/common';
 
 import { RateDto } from '@repo/api/rates/dto/rate.dto';
-import { RatesService } from './rates.service';
+
+import { RatesService } from '~/rates/rates.service';
 
 @Controller('rates')
 export class RatesController {
