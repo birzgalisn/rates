@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { db } from '@repo/database/db';
 
 import { DRIZZLE } from 'src/constants/db.constants';

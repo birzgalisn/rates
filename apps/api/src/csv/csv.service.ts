@@ -1,7 +1,9 @@
 import https from 'node:https';
+import { Cache } from 'cache-manager';
 
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Inject, Injectable } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 import { Db } from '@repo/database/types';
 import { exchangeRates } from '@repo/database/schema';
@@ -12,7 +14,10 @@ import { DRIZZLE } from 'src/constants/db.constants';
 
 @Injectable()
 export class CsvService {
-  constructor(@Inject(DRIZZLE) private conn: Db) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(DRIZZLE) private conn: Db,
+  ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   public async getLatestExchangeRates(): Promise<void> {
@@ -22,6 +27,8 @@ export class CsvService {
     await this.conn
       .insert(exchangeRates)
       .values({ audRate: rates.AUD, gbpRate: rates.GBP, usdRate: rates.USD });
+
+    await this.cacheManager.reset();
   }
 
   private static getExchangeRatesUrl(

@@ -1,8 +1,13 @@
+import { Cache } from 'cache-manager';
+
 import { Inject, Injectable } from '@nestjs/common';
-import { exchangeRates } from '@repo/database/schema';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+
 import { Db } from '@repo/database/types';
+import { exchangeRates } from '@repo/database/schema';
 import { asc, desc, sql } from '@repo/database/db';
 
+import { RATES_KEY, RATES_TTL } from 'src/constants/cache.constants';
 import { DRIZZLE } from 'src/constants/db.constants';
 
 import { RateDto } from '@repo/api/rates/dto/rate.dto';
@@ -10,16 +15,25 @@ import { Rate } from '@repo/api/rates/entities/rate.entity';
 
 @Injectable()
 export class RatesService {
-  constructor(@Inject(DRIZZLE) private conn: Db) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(DRIZZLE) private conn: Db,
+  ) {}
 
   public async findAll(query: RateDto): Promise<Rate> {
     const { rate, sort, page, perPage } = RatesService.parseQuery(query);
+    const cacheKey = RatesService.buildCacheKey({ rate, sort, page, perPage });
+
+    const cachedResult = await this.cacheManager.get<Rate>(cacheKey);
+    if (cachedResult) {
+      return cachedResult;
+    }
 
     const offset = RatesService.getOffset(page, perPage);
     const rateColumn = RatesService.getColumn(rate);
     const sortOrder = RatesService.getSort(sort);
 
-    return this.conn.transaction(async (tx) => {
+    const result = await this.conn.transaction(async (tx) => {
       const [data, metadata, totalCount] = await Promise.all([
         RatesService.fetchData(tx, rateColumn, sortOrder, perPage, offset),
         RatesService.fetchMetadata(tx, rateColumn),
@@ -32,15 +46,25 @@ export class RatesService {
         pagination: RatesService.calculatePagination(page, perPage, totalCount),
       };
     });
+
+    await this.cacheManager.set(cacheKey, result, RATES_TTL);
+
+    return result;
   }
 
   private static parseQuery({
-    page = 1,
-    perPage = 10,
     rate = 'usd',
     sort = 'desc',
+    page = 1,
+    perPage = 10,
   }: RateDto) {
     return { page: +page, perPage: +perPage, rate, sort };
+  }
+
+  private static buildCacheKey(
+    query: ReturnType<typeof RatesService.parseQuery>,
+  ) {
+    return `${RATES_KEY}_${Object.values(query).join('_')}`;
   }
 
   private static getOffset(page: number, perPage: number) {
