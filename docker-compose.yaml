@@ -89,6 +89,7 @@ services:
   #     - proxy
   #   depends_on:
   #     - db
+  #     - cache
 
   # web:
   #   image: rates:web
