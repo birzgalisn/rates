@@ -1,0 +1,21 @@
+name: Api
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/api/**
+      - packages/api/**
+      - packages/database/**
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: Build and push Docker image
+    uses: ./.github/workflows/ci-template.yaml
+    with:
+      app: api
+    secrets:
+      dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}

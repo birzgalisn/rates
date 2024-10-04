@@ -1,0 +1,24 @@
+name: Web
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/web/**
+      - packages/api/**
+      - packages/ui/**
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: Build and push Docker image
+    uses: ./.github/workflows/ci-template.yaml
+    with:
+      app: web
+      build-args: |
+        NEXT_PUBLIC_BASE_URL=${{ vars.NEXT_PUBLIC_BASE_URL }}
+        NEXT_PUBLIC_API_HOST=${{ vars.NEXT_PUBLIC_API_HOST }}
+    secrets:
+      dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
