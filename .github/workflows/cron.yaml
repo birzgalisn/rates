@@ -1,0 +1,21 @@
+name: Cron
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - apps/cron/**
+      - packages/api/**
+      - packages/database/**
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    name: Build and push Docker image
+    uses: ./.github/workflows/ci-template.yaml
+    with:
+      app: cron
+    secrets:
+      dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
