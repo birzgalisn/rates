@@ -10,7 +10,7 @@ networks:
 
 services:
   db:
-    image: postgres:16.4-alpine
+    image: postgres:17.0-alpine
     environment:
       - POSTGRES_USER=$POSTGRES_USER
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
@@ -22,7 +22,7 @@ services:
       - proxy
 
   pgadmin:
-    image: dpage/pgadmin4:8.11
+    image: dpage/pgadmin4:8.12
     environment:
       - PGADMIN_DEFAULT_EMAIL=$PGADMIN_DEFAULT_EMAIL
       - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_DEFAULT_PASSWORD
@@ -40,7 +40,7 @@ services:
       - db
 
   cache:
-    image: valkey/valkey:8.0.0-alpine
+    image: valkey/valkey:8.0-alpine
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     volumes:
@@ -110,7 +110,7 @@ services:
   #     - api
 
   traefik:
-    image: traefik:v3.1.2
+    image: traefik:v3.1
     command:
       - --api.dashboard=true
       - --entrypoints.web.address=:80
