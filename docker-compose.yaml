@@ -72,6 +72,49 @@ services:
       - db
       - cache
 
+  traefik:
+    image: traefik:v3.1
+    command:
+      - --api.dashboard=true
+      - --entrypoints.web.address=:80
+      - --providers.docker=true
+      - --providers.docker.network=proxy
+      - --providers.docker.exposedbydefault=false
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`traefik.$CNAME`)
+      - traefik.http.routers.traefik.entrypoints=web
+      - traefik.http.routers.traefik.service=api@internal
+    networks:
+      proxy:
+        aliases:
+          - $CNAME
+          - api.$CNAME
+          - pgadmin.$CNAME
+    depends_on:
+      - turbo
+      # - cron
+      # - api
+      # - web
+
+  # cron:
+  #   image: rates:cron
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/cron/Dockerfile
+  #   environment:
+  #     - DATABASE_URL=$DATABASE_URL
+  #     - CACHE_URL=$CACHE_URL
+  #   networks:
+  #     - proxy
+  #   depends_on:
+  #     - db
+  #     - cache
+
   # api:
   #   image: rates:api
   #   build:
@@ -108,31 +151,3 @@ services:
   #     - proxy
   #   depends_on:
   #     - api
-
-  traefik:
-    image: traefik:v3.1
-    command:
-      - --api.dashboard=true
-      - --entrypoints.web.address=:80
-      - --providers.docker=true
-      - --providers.docker.network=proxy
-      - --providers.docker.exposedbydefault=false
-    ports:
-      - 80:80
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.traefik.rule=Host(`traefik.$CNAME`)
-      - traefik.http.routers.traefik.entrypoints=web
-      - traefik.http.routers.traefik.service=api@internal
-    networks:
-      proxy:
-        aliases:
-          - $CNAME
-          - api.$CNAME
-          - pgadmin.$CNAME
-    depends_on:
-      - turbo
-      # - api
-      # - web
