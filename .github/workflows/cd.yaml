@@ -13,12 +13,81 @@ on:
         type: string
 
 env:
+  # deployment
   SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+  SSH_USER: ${{ secrets.SSH_USER }}
+  SSH_HOST: ${{ secrets.SSH_HOST }}
+  CNAME: ${{ vars.CNAME }}
+  PROJECT: ${{ vars.PROJECT }}
+  SERVICE_NAME: ${{ inputs.app }}
+  SERVICE_PORT: ${{ inputs.port }}
+  DASHBOARD_USER: ${{ secrets.DASHBOARD_USER }}
+  DASHBOARD_PASSWORD: ${{ secrets.DASHBOARD_PASSWORD }}
+  # api/cache
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  CACHE_URL: ${{ secrets.CACHE_URL }}
+  # db
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+  # pgadmin
+  PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
+  PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
 
 jobs:
+  migrate:
+    name: Migrate database
+    runs-on: ubuntu-latest
+    if: inputs.app == 'api' || inputs.app == 'cron'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            packages/database
+            packages/eslint-config
+            packages/typescript-config
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.9.0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm
+        run: |
+          echo "store=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm.outputs.store }}
+          key: ${{ runner.os }}-migrate-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-migrate-
+
+      - name: Install dependencies
+        run: |
+          pnpm install --filter=@repo/database
+
+      - name: Check database connection
+        run: |
+          pnpm db:check
+
+      - name: Run database migration
+        run: |
+          pnpm db:migrate
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+    needs: migrate
 
     steps:
       - name: Checkout
@@ -36,26 +105,6 @@ jobs:
           echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
       - name: Do blue-green deployment
-        env:
-          # deployment
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          CNAME: ${{ vars.CNAME }}
-          PROJECT: ${{ vars.PROJECT }}
-          SERVICE_NAME: ${{ inputs.app }}
-          SERVICE_PORT: ${{ inputs.port }}
-          DASHBOARD_USER: ${{ secrets.DASHBOARD_USER }}
-          DASHBOARD_PASSWORD: ${{ secrets.DASHBOARD_PASSWORD }}
-          # api/cache
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          CACHE_URL: ${{ secrets.CACHE_URL }}
-          # db
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          # pgadmin
-          PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
-          PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
         run: |
           cd ./.deployment
           ./do-blue-green-deployment.sh
