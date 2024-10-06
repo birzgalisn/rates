@@ -36,17 +36,26 @@ jobs:
 
       - name: Do blue-green deployment
         env:
+          # deployment
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
           CNAME: ${{ vars.CNAME }}
           PROJECT: ${{ vars.PROJECT }}
           SERVICE_NAME: ${{ inputs.app }}
           SERVICE_PORT: ${{ inputs.port }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
           DASHBOARD_USER: ${{ secrets.DASHBOARD_USER }}
           DASHBOARD_PASSWORD: ${{ secrets.DASHBOARD_PASSWORD }}
+          # api/cache
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CACHE_URL: ${{ secrets.CACHE_URL }}
+          # db
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          # pgadmin
+          PGADMIN_DEFAULT_EMAIL: ${{ secrets.PGADMIN_DEFAULT_EMAIL }}
+          PGADMIN_DEFAULT_PASSWORD: ${{ secrets.PGADMIN_DEFAULT_PASSWORD }}
         run: |
           cd ./.deployment
           ./do-blue-green-deployment.sh
