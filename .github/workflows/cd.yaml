@@ -12,6 +12,9 @@ on:
         required: true
         type: string
 
+env:
+  SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+
 jobs:
   deploy:
     name: Deploy
@@ -25,8 +28,6 @@ jobs:
             .deployment
 
       - name: Setup SSH
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.SSH_KEY }}"
@@ -37,7 +38,6 @@ jobs:
       - name: Do blue-green deployment
         env:
           # deployment
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           CNAME: ${{ vars.CNAME }}
