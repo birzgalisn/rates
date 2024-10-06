@@ -7,6 +7,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { AppService } from '~/app.service';
 import { AppController } from '~/app.controller';
 
+import { UpModule } from '~/up/up.module';
 import { RatesModule } from '~/rates/rates.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { RatesModule } from '~/rates/rates.module';
       store: redisStore,
       url: process.env.CACHE_URL,
     }),
+    UpModule,
     RatesModule,
   ],
   controllers: [AppController],

@@ -8,6 +8,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { AppService } from '~/app.service';
 import { AppController } from '~/app.controller';
 
+import { UpModule } from '~/up/up.module';
 import { CsvModule } from '~/csv/csv.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { CsvModule } from '~/csv/csv.module';
       store: redisStore,
       url: process.env.CACHE_URL,
     }),
+    UpModule,
     CsvModule,
   ],
   controllers: [AppController],
