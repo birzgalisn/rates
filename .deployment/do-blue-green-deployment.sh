@@ -115,6 +115,9 @@ main() {
     fi
   done
 
+  log "INFO" "Pruning unused Docker images..."
+  docker_cmd image prune -f
+
   log "INFO" "Deployment completed successfully for all services"
 }
 
