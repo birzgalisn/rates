@@ -1,0 +1,114 @@
+name: $PROJECT
+
+volumes:
+  db:
+  pgadmin:
+  cache:
+
+networks:
+  proxy:
+    external: true
+
+services:
+  db:
+    container_name: db
+    image: postgres:17.0-alpine
+    environment:
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DB
+      - PGDATA=/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - proxy
+    restart: always
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:8.12
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=$PGADMIN_DEFAULT_EMAIL
+      - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_DEFAULT_PASSWORD
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.pgadmin.rule=Host(`pgadmin.$CNAME`)
+      - traefik.http.routers.pgadmin.entrypoints=websecure
+      - traefik.http.services.pgadmin.loadbalancer.server.port=80
+    networks:
+      - proxy
+    restart: always
+
+  cache:
+    container_name: cache
+    image: valkey/valkey:8.0-alpine
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - cache:/data
+    networks:
+      - proxy
+    restart: unless-stopped
+
+  blue-cron: &cron
+    container_name: blue-cron
+    image: birzgalisn/rates-cron:main
+    environment:
+      - DATABASE_URL=$DATABASE_URL
+      - CACHE_URL=$CACHE_URL
+    networks:
+      - proxy
+    restart: unless-stopped
+
+  green-cron:
+    <<: *cron
+    container_name: green-cron
+
+  blue-api: &api
+    container_name: blue-api
+    image: birzgalisn/rates-api:main
+    environment:
+      - DATABASE_URL=$DATABASE_URL
+      - CACHE_URL=$CACHE_URL
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.rule=Host(`api.$CNAME`)
+      - traefik.http.routers.api.entrypoints=websecure
+      - traefik.http.middlewares.test-retry.retry.attempts=5
+      - traefik.http.middlewares.test-retry.retry.initialinterval=200ms
+      - traefik.http.services.api.loadbalancer.server.port=4000
+      - traefik.http.services.api.loadbalancer.healthCheck.path=/up
+      - traefik.http.services.api.loadbalancer.healthCheck.interval=5s
+      - traefik.http.services.api.loadbalancer.healthCheck.timeout=1s
+    networks:
+      - proxy
+    restart: unless-stopped
+
+  green-api:
+    <<: *api
+    container_name: green-api
+
+  blue-web: &web
+    container_name: blue-web
+    image: birzgalisn/rates-web:main
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.web.rule=Host(`$CNAME`)
+      - traefik.http.routers.web.entrypoints=websecure
+      - traefik.http.middlewares.test-retry.retry.attempts=5
+      - traefik.http.middlewares.test-retry.retry.initialinterval=200ms
+      - traefik.http.services.web.loadbalancer.server.port=3000
+      - traefik.http.services.web.loadbalancer.healthCheck.path=/up
+      - traefik.http.services.web.loadbalancer.healthCheck.interval=5s
+      - traefik.http.services.web.loadbalancer.healthCheck.timeout=1s
+    networks:
+      - proxy
+    restart: unless-stopped
+
+  green-web:
+    <<: *web
+    container_name: green-web

@@ -1,0 +1,50 @@
+name: cd
+
+on:
+  workflow_call:
+    inputs:
+      app:
+        description: App to deploy
+        required: true
+        type: string
+      port:
+        description: App port number
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .deployment
+
+      - name: Setup SSH
+        run: |
+          ssh-agent -a "/tmp/ssh_agent.sock" > /dev/null
+          echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
+          ssh-add - <<< "${{ secrets.SSH_KEY }}"
+          mkdir -p ~/.ssh
+          echo "HOST *" > ~/.ssh/config
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+      - name: Do blue-green deployment
+        env:
+          CNAME: ${{ vars.CNAME }}
+          PROJECT: ${{ vars.PROJECT }}
+          SERVICE_NAME: ${{ inputs.app }}
+          SERVICE_PORT: ${{ inputs.port }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          DASHBOARD_USER: ${{ secrets.DASHBOARD_USER }}
+          DASHBOARD_PASSWORD: ${{ secrets.DASHBOARD_PASSWORD }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CACHE_URL: ${{ secrets.CACHE_URL }}
+        run: |
+          cd ./.deployment
+          ./do-blue-green-deployment.sh

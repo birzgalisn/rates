@@ -1,0 +1,71 @@
+name: root
+
+volumes:
+  letsencrypt:
+    external: true
+
+networks:
+  socket:
+  proxy:
+    external: true
+
+services:
+  traefik:
+    container_name: traefik
+    image: traefik:v3.1
+    environment:
+      - CF_DNS_API_TOKEN=$CF_DNS_API_TOKEN
+    command:
+      - --accesslog
+      - --log.level=INFO
+      - --api.dashboard=true
+      - --providers.docker
+      - --providers.docker.network=proxy
+      - --providers.docker.endpoint=tcp://dockersocket:2375
+      - --providers.docker.exposedbydefault=false
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
+      - --certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53
+      - --certificatesresolvers.letsencrypt.acme.email=$ACME_EMAIL
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.letsencrypt.acme.certificatesduration=2160
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls.certresolver=letsencrypt
+      - --entrypoints.websecure.http.tls.domains[0].main=$CNAME
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.$CNAME
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --serverstransport.insecureskipverify=true
+      - --global.checknewversion=false
+      - --global.sendanonymoususage=false
+    labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.dashboard-auth.basicauth.users=$DASHBOARD_AUTH
+      - traefik.http.routers.traefik.rule=Host(`traefik.$CNAME`)
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.middlewares=dashboard-auth
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - letsencrypt:/letsencrypt
+    networks:
+      - socket
+      - proxy
+    restart: unless-stopped
+
+  dockersocket:
+    privileged: true
+    container_name: dockersocket
+    image: tecnativa/docker-socket-proxy:0.3
+    environment:
+      - CONTAINERS=1
+      - POST=0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - socket
+    restart: unless-stopped

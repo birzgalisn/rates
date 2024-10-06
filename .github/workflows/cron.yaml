@@ -1,4 +1,4 @@
-name: Cron
+name: cron
 
 on:
   push:
@@ -10,12 +10,25 @@ on:
       - packages/database/**
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-and-push:
-    name: Build and push Docker image
-    uses: ./.github/workflows/ci-template.yaml
+  build-push:
+    name: Prepare Docker image
+    uses: ./.github/workflows/ci.yaml
     with:
       app: cron
     secrets:
       dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
       dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  deploy:
+    name: Deploy
+    uses: ./.github/workflows/cd.yaml
+    needs: build-push
+    with:
+      app: cron
+      port: 2000
+    secrets: inherit
