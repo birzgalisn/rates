@@ -25,9 +25,10 @@ jobs:
             .deployment
 
       - name: Setup SSH
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          ssh-agent -a "/tmp/ssh_agent.sock" > /dev/null
-          echo "SSH_AUTH_SOCK=/tmp/ssh_agent.sock" >> $GITHUB_ENV
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-add - <<< "${{ secrets.SSH_KEY }}"
           mkdir -p ~/.ssh
           echo "HOST *" > ~/.ssh/config
@@ -35,6 +36,7 @@ jobs:
 
       - name: Do blue-green deployment
         env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
           CNAME: ${{ vars.CNAME }}
           PROJECT: ${{ vars.PROJECT }}
           SERVICE_NAME: ${{ inputs.app }}
