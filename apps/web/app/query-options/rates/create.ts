@@ -18,7 +18,7 @@ export function createRatesOptions(searchParams: URLSearchParams) {
   return queryOptions<Rate>({
     queryKey: ['rates', rate, sort, page, perPage],
     queryFn: async () => {
-      const res = await fetch(url, { next: { revalidate: 600 } });
+      const res = await fetch(url, { next: { revalidate: 600 } }); // every 10 minutes
       return res.json();
     },
   });
