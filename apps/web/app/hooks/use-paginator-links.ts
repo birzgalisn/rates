@@ -21,7 +21,7 @@ export function usePaginatorLinks({
     previous: paginator.previous ? buildUrl(paginator.previous) : pathname,
     next: paginator.next ? buildUrl(paginator.next) : pathname,
     buildUrl,
-  };
+  } as const;
 }
 
 export function constructPaginator(
