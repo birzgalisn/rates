@@ -2,7 +2,6 @@ name: $PROJECT
 
 volumes:
   db:
-  pgadmin:
   cache:
 
 networks:
@@ -22,23 +21,6 @@ services:
       - 5432:5432
     volumes:
       - db:/var/lib/postgresql/data
-    networks:
-      - proxy
-    restart: always
-
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4:8.12
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=$PGADMIN_DEFAULT_EMAIL
-      - PGADMIN_DEFAULT_PASSWORD=$PGADMIN_DEFAULT_PASSWORD
-    volumes:
-      - pgadmin:/var/lib/pgadmin
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.pgadmin.rule=Host(`pgadmin.$CNAME`)
-      - traefik.http.routers.pgadmin.entrypoints=websecure
-      - traefik.http.services.pgadmin.loadbalancer.server.port=80
     networks:
       - proxy
     restart: always
