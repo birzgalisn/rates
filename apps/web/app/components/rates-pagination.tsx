@@ -11,60 +11,62 @@ import {
 } from '@repo/ui/components/ui/pagination';
 
 import { useRatesPagination } from '~/hooks/use-rates-pagination';
+import { usePaginatorLinks } from '~/hooks/use-paginator-links';
 
 export function RatesPagination() {
   const { paginator, handlePageChange } = useRatesPagination();
+  const { previous, next, buildUrl } = usePaginatorLinks({ paginator });
 
-  const getPaginationClassName = (page?: number) =>
-    PAGINATION_STYLES_MAP[`${!!page}`];
+  const handleClick =
+    (page?: number) =>
+    (e: React.MouseEvent<HTMLAnchorElement | HTMLSpanElement>) => {
+      e.preventDefault();
+      page && handlePageChange(page);
+    };
 
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            className={getPaginationClassName(paginator.previous)}
-            onClick={() =>
-              paginator.previous && handlePageChange(paginator.previous)
-            }
+            href={previous}
+            onClick={handleClick(paginator.previous)}
+            className={PAGINATION_STYLES_MAP[`${!!paginator.previous}`]}
           />
         </PaginationItem>
 
         <PaginationItem>
           <PaginationEllipsis
-            className={getPaginationClassName(paginator.burstPrevious)}
-            onClick={() =>
-              paginator.burstPrevious &&
-              handlePageChange(paginator.burstPrevious)
-            }
+            onClick={handleClick(paginator.burstPrevious)}
+            className={PAGINATION_STYLES_MAP[`${!!paginator.burstPrevious}`]}
           />
         </PaginationItem>
 
-        {paginator.visible.map((page) => (
-          <PaginationItem key={page}>
+        {paginator.visible.map((visiblePage) => (
+          <PaginationItem key={visiblePage}>
             <PaginationLink
-              isActive={page === paginator.current}
+              isActive={visiblePage === paginator.current}
+              href={buildUrl(visiblePage)}
+              onClick={handleClick(visiblePage)}
               className="select-none hover:cursor-pointer"
-              onClick={() => handlePageChange(page)}
             >
-              {page}
+              {visiblePage}
             </PaginationLink>
           </PaginationItem>
         ))}
 
         <PaginationItem>
           <PaginationEllipsis
-            className={getPaginationClassName(paginator.burstNext)}
-            onClick={() =>
-              !!paginator.burstNext && handlePageChange(paginator.burstNext)
-            }
+            onClick={handleClick(paginator.burstNext)}
+            className={PAGINATION_STYLES_MAP[`${!!paginator.burstNext}`]}
           />
         </PaginationItem>
 
         <PaginationItem>
           <PaginationNext
-            className={getPaginationClassName(paginator.next)}
-            onClick={() => paginator.next && handlePageChange(paginator.next)}
+            href={next}
+            onClick={handleClick(paginator.next)}
+            className={PAGINATION_STYLES_MAP[`${!!paginator.next}`]}
           />
         </PaginationItem>
       </PaginationContent>
