@@ -2,7 +2,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 
 import { Rate } from '@repo/api/rates/entities/rate.entity';
 
-export function usePaginatorLinks({
+export function usePaginationLinkBuilder({
   paginator,
 }: {
   paginator: ReturnType<typeof constructPaginator>;
@@ -10,18 +10,14 @@ export function usePaginatorLinks({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const buildUrl = (page = paginator.current) => {
+  const linkBuilder = (page = paginator.current) => {
     const params = new URLSearchParams(searchParams);
-    params[page ? 'set' : 'delete']('page', `${page}`);
+    params.set('page', `${page}`);
 
     return `${pathname}?${params}`;
   };
 
-  return {
-    previous: paginator.previous ? buildUrl(paginator.previous) : pathname,
-    next: paginator.next ? buildUrl(paginator.next) : pathname,
-    buildUrl,
-  } as const;
+  return linkBuilder;
 }
 
 export function constructPaginator(

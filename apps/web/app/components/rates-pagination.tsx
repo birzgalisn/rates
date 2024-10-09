@@ -11,11 +11,11 @@ import {
 } from '@repo/ui/components/ui/pagination';
 
 import { useRatesPagination } from '~/hooks/use-rates-pagination';
-import { usePaginatorLinks } from '~/hooks/use-paginator-links';
+import { usePaginationLinkBuilder } from '~/hooks/use-pagination-link-builder';
 
 export function RatesPagination() {
   const { paginator, handlePageChange } = useRatesPagination();
-  const { previous, next, buildUrl } = usePaginatorLinks({ paginator });
+  const linkBuilder = usePaginationLinkBuilder({ paginator });
 
   const handleClick =
     (page?: number) =>
@@ -29,7 +29,7 @@ export function RatesPagination() {
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={previous}
+            href={linkBuilder(paginator.previous)}
             onClick={handleClick(paginator.previous)}
             className={PAGINATION_STYLES_MAP[`${!!paginator.previous}`]}
           />
@@ -46,7 +46,7 @@ export function RatesPagination() {
           <PaginationItem key={visiblePage}>
             <PaginationLink
               isActive={visiblePage === paginator.current}
-              href={buildUrl(visiblePage)}
+              href={linkBuilder(visiblePage)}
               onClick={handleClick(visiblePage)}
               className="select-none hover:cursor-pointer"
             >
@@ -64,7 +64,7 @@ export function RatesPagination() {
 
         <PaginationItem>
           <PaginationNext
-            href={next}
+            href={linkBuilder(paginator.next)}
             onClick={handleClick(paginator.next)}
             className={PAGINATION_STYLES_MAP[`${!!paginator.next}`]}
           />

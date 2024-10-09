@@ -4,7 +4,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 
 import { makeClientRatesOptions } from '~/query-options/rates/client';
 import { useUpdateSearchParams } from '~/hooks/use-update-search-params';
-import { constructPaginator } from '~/hooks/use-paginator-links';
+import { constructPaginator } from '~/hooks/use-pagination-link-builder';
 
 export function useRatesPagination() {
   const { updateSearchParam } = useUpdateSearchParams();
