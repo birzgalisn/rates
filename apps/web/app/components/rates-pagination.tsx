@@ -36,10 +36,13 @@ export function RatesPagination() {
         </PaginationItem>
 
         <PaginationItem>
-          <PaginationEllipsis
+          <PaginationLink
+            href={linkBuilder(paginator.burstPrevious)}
             onClick={handleClick(paginator.burstPrevious)}
             className={PAGINATION_STYLES_MAP[`${!!paginator.burstPrevious}`]}
-          />
+          >
+            <PaginationEllipsis />
+          </PaginationLink>
         </PaginationItem>
 
         {paginator.visible.map((visiblePage) => (
@@ -56,10 +59,13 @@ export function RatesPagination() {
         ))}
 
         <PaginationItem>
-          <PaginationEllipsis
+          <PaginationLink
+            href={linkBuilder(paginator.burstNext)}
             onClick={handleClick(paginator.burstNext)}
             className={PAGINATION_STYLES_MAP[`${!!paginator.burstNext}`]}
-          />
+          >
+            <PaginationEllipsis />
+          </PaginationLink>
         </PaginationItem>
 
         <PaginationItem>
