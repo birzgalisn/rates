@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:5432/${{ vars.PROJECT }}
 
 jobs:
   migrate:
@@ -48,6 +48,15 @@ jobs:
         run: |
           pnpm install --filter=@repo/database
 
+      - name: Allow database access
+        run: |
+          curl \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.HETZNER_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"apply_to":[{"server":{"id":${{ secrets.HETZNER_HOST_ID }}},"type":"server"}]}' \
+            "https://api.hetzner.cloud/v1/firewalls/${{ secrets.HETZNER_FW_ID }}/actions/apply_to_resources"
+
       - name: Check database connection
         run: |
           pnpm db:check
@@ -55,3 +64,12 @@ jobs:
       - name: Run database migration
         run: |
           pnpm db:migrate
+
+      - name: Disallow database access
+        run: |
+          curl \
+            -X POST \
+            -H "Authorization: Bearer ${{ secrets.HETZNER_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"remove_from":[{"server":{"id":${{ secrets.HETZNER_HOST_ID }}},"type":"server"}]}' \
+            "https://api.hetzner.cloud/v1/firewalls/${{ secrets.HETZNER_FW_ID }}/actions/remove_from_resources"
