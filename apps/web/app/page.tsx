@@ -20,7 +20,7 @@ export default function RootPage({
   return (
     <main className="m-auto h-screen max-w-screen-sm p-4">
       <div className="bg-card flex flex-col gap-4 rounded-md border p-4 shadow-sm">
-        <Title>Rates</Title>
+        <Title>Euro exchange rates</Title>
         <HydrationBoundary state={dehydrate(queryClient)}>
           <RatesPagination />
           <RatesTable />
