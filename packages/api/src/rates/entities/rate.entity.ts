@@ -1,11 +1,18 @@
+import { IsArray, IsDefined, IsObject } from 'class-validator';
+
 export class Rate {
-  data: {
+  @IsArray()
+  @IsDefined()
+  public data: {
     id: number;
     rate: string;
     sign: string;
     createdAt: string;
   }[];
-  metadata: {
+
+  @IsObject()
+  @IsDefined()
+  public metadata: {
     minimum: number;
     maximum: number;
     average: number;
@@ -14,7 +21,10 @@ export class Rate {
       gmt: string;
     };
   };
-  pagination: {
+
+  @IsObject()
+  @IsDefined()
+  public pagination: {
     previous?: number;
     next?: number;
     current: number;
