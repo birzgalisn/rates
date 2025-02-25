@@ -17,10 +17,14 @@ async function seedExchangeRates(count = 300) {
         return;
       }
 
-      const newRates = Array.from({ length: count }, () => ({
+      const createdAt = new Date();
+      const newRates = Array.from({ length: count }, (_, index) => ({
         audRate: generateRandomRate(1.2, 1.4),
         gbpRate: generateRandomRate(0.7, 0.85),
         usdRate: generateRandomRate(0.95, 1.05),
+        createdAt: new Date(
+          createdAt.getTime() - index * 24 * 60 * 60 * 1000,
+        ).toISOString(),
       }));
 
       await tx.insert(exchangeRates).values(newRates);
